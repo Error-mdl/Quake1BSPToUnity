@@ -106,7 +106,12 @@ public class Q1BspToUnity : EditorWindow
       pinnedRawData.Free();
     }
   }
-
+  private void OnEnable()
+  {
+    GetWindow<Q1BspToUnity>().texArrayShader = Shader.Find("Quake/Brush Texture Array");
+    GetWindow<Q1BspToUnity>().colorPalette = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Q1BspToUnity/textures/colormap.png", typeof(Texture2D));
+    GetWindow<Q1BspToUnity>().lightStyles = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Q1BspToUnity/textures/quake_lightstyles.png", typeof(Texture2D));
+  }
   static void Init()
   {
     const int width = 400;
@@ -116,16 +121,8 @@ public class Q1BspToUnity : EditorWindow
     var y = (Screen.currentResolution.height - height) / 2;
 
     GetWindow<Q1BspToUnity>().position = new Rect(x, y, width, height);
+    
   }
-
-  void OnEnable()
-  {
-    texArrayShader = Shader.Find("Quake/Brush Texture Array");
-    colorPalette = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Q1BspToUnity/textures/colormap.png", typeof(Texture2D));
-    lightStyles = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Q1BspToUnity/textures/quake_lightstyles.png", typeof(Texture2D));
-   
-  }
-
 
   [MenuItem("Window/Q1 BSP Import")]
   public static void ShowWindow()
@@ -141,9 +138,9 @@ public class Q1BspToUnity : EditorWindow
     }
     EditorGUILayout.TextField(bspPath);
     EditorGUILayout.EndHorizontal();
-    EditorGUILayout.ObjectField("Shader", texArrayShader, typeof(Shader), false);
-    EditorGUILayout.ObjectField("Color Palette", colorPalette, typeof(Texture2D), false);
-    EditorGUILayout.ObjectField("Light Style Texture", lightStyles, typeof(Texture2D), false);
+    texArrayShader = EditorGUILayout.ObjectField("Shader", texArrayShader, typeof(Shader), false) as Shader;
+    colorPalette = EditorGUILayout.ObjectField("Color Palette", colorPalette, typeof(Texture2D), false) as Texture2D;
+    lightStyles = EditorGUILayout.ObjectField("Light Style Texture", lightStyles, typeof(Texture2D), false) as Texture2D;
     EditorGUILayout.BeginHorizontal();
     GUILayout.FlexibleSpace();
     if (GUILayout.Button("Create Mesh and Textures", GUILayout.Width(175), GUILayout.Height(30)))
